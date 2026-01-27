@@ -1,7 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+const bcrypt = require('bcrypt');
+const { SALT } = require('../config/serverConfig');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -33,5 +33,11 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+  // we need to hash the password before saving it to database
+  // User is the model (class), user is the record (instance) or a row in table
+  User.beforeCreate((user) => {
+    const hashedPassword = bcrypt.hashSync(user.password, SALT);
+    user.password = hashedPassword;
+  })
   return User;
 };
