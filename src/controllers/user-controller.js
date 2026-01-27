@@ -4,6 +4,7 @@ class UserController {
     constructor() {
         this.userService = new UserService();
         this.create = this.create.bind(this);
+        this.destroy = this.destroy.bind(this);
     }
 
     async create(req, res) {
@@ -22,7 +23,31 @@ class UserController {
         } catch (error) {
             console.log(error);
             return res.status(500).json({
-                message: 'Something went wrong',
+                message: 'Something went wrong in controllers.',
+                data: {},
+                success: false,
+                err: error
+            });
+        }
+    }
+
+    async destroy(req, res) {
+        try {
+            const user = await this.userService.destroy({
+                where: {
+                    id: req.params.id, // user/3
+                },
+            })
+            res.status(201).json({
+                success: true,
+                message: 'Successfully deleted the user',
+                data: user,
+                err: {}
+            })
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message: 'Something went wrong in contollers.',
                 data: {},
                 success: false,
                 err: error
