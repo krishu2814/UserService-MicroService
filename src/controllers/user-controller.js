@@ -6,6 +6,7 @@ class UserController {
         this.create = this.create.bind(this);
         this.destroy = this.destroy.bind(this);
         this.get = this.get.bind(this);
+        this.signIn = this.signIn.bind(this);
     }
 
     async create(req, res) {
@@ -79,6 +80,28 @@ class UserController {
             });
         }
     }
+
+    async signIn(req, res) {
+        try {
+            const user = await this.userService.signIn(req.body.email, req.body.password);
+            res.status(201).json({
+                success: true,
+                message: 'Successfully sign in the user',
+                data: user,
+                err: {}
+            });
+        }
+         catch (error) {
+            console.log(error);
+            return res.status(404).json({
+                message: 'Not able to sign in user.',
+                data: {},
+                success: false,
+                err: error
+            });
+        }
+    }
+
 }
 
 module.exports =new UserController();
