@@ -5,6 +5,7 @@ class UserController {
         this.userService = new UserService();
         this.create = this.create.bind(this);
         this.destroy = this.destroy.bind(this);
+        this.get = this.get.bind(this);
     }
 
     async create(req, res) {
@@ -48,6 +49,30 @@ class UserController {
             console.log(error);
             return res.status(500).json({
                 message: 'Something went wrong in contollers.',
+                data: {},
+                success: false,
+                err: error
+            });
+        }
+    }
+
+    async get(req, res) {
+        try {
+            const user = await this.userService.get(req.params.id); 
+            console.log(user);
+            if (!user) {
+                throw error;
+            }
+            res.status(200).json({
+                success: true,
+                message: 'Successfully fetched the user',
+                data: user,
+                err: {}
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(404).json({
+                message: 'Not able to fetch user.',
                 data: {},
                 success: false,
                 err: error
