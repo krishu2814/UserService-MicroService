@@ -1,7 +1,7 @@
 const UserRepository = require('../repository/user-repository.js');
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
-const { SECRET_TOKEN } = require('../config/serverConfig.js');
+const { SECRET_TOKEN, EXPIRES_IN } = require('../config/serverConfig.js');
 
 class UserService {
     constructor() {
@@ -20,14 +20,14 @@ class UserService {
             // compare password with hashed passsword in db
             // user.password -> database stored password
             const validPassword = await this.checkPassword(passwordByUser, user.password);
-            console.log("Password is right.");
+            // console.log("Password is right.");
             if (!validPassword) {
                 throw { error: "Wrong password by user" };
             }
 
             // create token
             // user -> fetched from database
-            const token = await this.crateToken({
+            const token = await this.createToken({
                 email: user.email,
                 id: user.id,
             });
@@ -79,16 +79,54 @@ class UserService {
         }       
     }
 
-    async crateToken(payload) {
+    async createToken(payload) {
         try {
+
             // only 3 parameters
-            const token = JWT.sign(payload, SECRET_TOKEN, { expiresIn: 800000 });
+            // payload -> email, id
+            const token = JWT.sign(payload, SECRET_TOKEN, { expiresIn: EXPIRES_IN });
             return token;
         } catch (error) {
             console.log("Something went wrong in token creation.");
             throw error;
         }
     }
+
+    async isAuthenticated(token) {
+        try {
+            const istokenVerified = await this.verifyToken(token);
+            if (!istokenVerified) {
+                throw { error : 'Invalid Token!'}
+            }
+            /**
+             * Checking if user deleted the account after token creation
+             */
+            const user = await this.userRepository.getUserById(istokenVerified.id);
+            if (!user) {
+                throw { error: 'No valid user with corresponding token exists.'}
+            }
+
+            // important will need later -> practise
+            return {
+                id: user.id,
+                email: user.email
+            };
+        } catch (error) {
+            console.log("Something went wrong in authentication.");
+            throw error;
+        }
+    }
+
+    async verifyToken(token) {
+        try {
+            const response = JWT.verify(token, SECRET_TOKEN);
+            return response;
+        } catch (error) {
+            console.log("Something went wrong in token validation", error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = UserService;

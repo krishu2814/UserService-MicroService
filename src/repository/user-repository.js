@@ -25,8 +25,9 @@ class UserRepository {
     async getUserById(userId) {
         try {
             const user = await User.findByPk(userId, {
-                attributes: ['email', 'id'],
+                attributes: ['email', 'id'], // only these columns in response
             });
+            // console.log(user);
             return user;
         } catch (error) {
             console.log("Something went wrong in the repository layer");

@@ -7,6 +7,7 @@ class UserController {
         this.destroy = this.destroy.bind(this);
         this.get = this.get.bind(this);
         this.signIn = this.signIn.bind(this);
+        this.isAuthenticated = this.isAuthenticated.bind(this);
     }
 
     async create(req, res) {
@@ -87,7 +88,7 @@ class UserController {
             res.status(201).json({
                 success: true,
                 message: 'Successfully sign in the user',
-                data: user,
+                token: user,
                 err: {}
             });
         }
@@ -95,7 +96,34 @@ class UserController {
             console.log(error);
             return res.status(404).json({
                 message: 'Not able to sign in user.',
-                data: {},
+                token: {},
+                success: false,
+                err: error
+            });
+        }
+    }
+
+    async isAuthenticated(req, res) {
+        try {
+
+            // get the token in headers
+            // const token = req.headers['authorization']; // -> bearer
+            const token = req.headers['x-access-token'];
+            // console.log(token);
+            // do it in service since more logic needed
+            // verify the token
+            // const isVerifiedToken = await this.userService.verifyToken(token); // {email,id,iat,exp}
+            const response = await this.userService.isAuthenticated(token);
+            return res.status(200).json({
+                success: true,
+                err: {},
+                data: response,
+                message: 'User is authenticated and token is valid.'
+            });
+        } catch (error) {
+            return res.status(404).json({
+                message: 'Not able to authenticate the user.',
+                token: {},
                 success: false,
                 err: error
             });
