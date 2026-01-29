@@ -6,6 +6,5 @@ dotenv.config();
 module.exports = {
     PORT: process.env.PORT,
     SALT: bcrypt.genSaltSync(9),
-    SECRET_TOKEN: 'krishukumarsingh',
     EXPIRES_IN: '1d',
 }

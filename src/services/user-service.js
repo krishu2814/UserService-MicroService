@@ -1,7 +1,7 @@
 const UserRepository = require('../repository/user-repository.js');
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
-const { SECRET_TOKEN, EXPIRES_IN } = require('../config/serverConfig.js');
+const { EXPIRES_IN } = require('../config/serverConfig.js');
 
 class UserService {
     constructor() {
@@ -84,7 +84,7 @@ class UserService {
 
             // only 3 parameters
             // payload -> email, id
-            const token = JWT.sign(payload, SECRET_TOKEN, { expiresIn: EXPIRES_IN });
+            const token = JWT.sign(payload, process.env.SECRET_TOKEN, { expiresIn: EXPIRES_IN });
             return token;
         } catch (error) {
             console.log("Something went wrong in token creation.");
@@ -119,7 +119,7 @@ class UserService {
 
     async verifyToken(token) {
         try {
-            const response = JWT.verify(token, SECRET_TOKEN);
+            const response = JWT.verify(token, process.env.SECRET_TOKEN);
             return response;
         } catch (error) {
             console.log("Something went wrong in token validation", error);
