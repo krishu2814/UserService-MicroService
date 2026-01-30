@@ -19,16 +19,6 @@ const startServer = () => {
             db.sequelize.sync({ alter: true})
         }
 
-        /*
-        const u1 = await User.findByPk(4);
-        const u2 = await Role.findByPk(1);
-
-        // u1.addRole(u2); // INSERT INTO `User_Roles`
-        const response = await u2.getUsers();
-        // console.log(u2);
-        console.log("////////////////////");
-        console.log(response);
-        */
     })
 };
 

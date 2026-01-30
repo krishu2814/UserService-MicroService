@@ -4,6 +4,7 @@ const { AuthRequestValidators } = require('../../middlewares/index');
 
 const router = express.Router();
 
+router.get('/user/isAdmin', AuthRequestValidators.validateAdminRequest, UserController.isAdmin);
 router.post('/user/signup', AuthRequestValidators.validateUser, UserController.create);
 router.delete('/user/:id', UserController.destroy);
 router.post('/user/signin', AuthRequestValidators.validateUser, UserController.signIn);

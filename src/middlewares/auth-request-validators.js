@@ -10,6 +10,19 @@ const validateUser = (req, res, next) => {
     next();
 }
 
+const validateAdminRequest = (req, res, next) => {
+    if (!req.body.id) {
+        return res.status(400).json({
+            sucess: false,
+            data: {},
+            err: 'user id not given in req.body.',
+            message: 'Something went wrong in middleware.'
+        })
+    }
+    next();
+}
+
 module.exports = {
-    validateUser
+    validateUser,
+    validateAdminRequest
 }

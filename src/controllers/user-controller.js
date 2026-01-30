@@ -8,6 +8,7 @@ class UserController {
         this.get = this.get.bind(this);
         this.signIn = this.signIn.bind(this);
         this.isAuthenticated = this.isAuthenticated.bind(this);
+        this.isAdmin = this.isAdmin.bind(this);
     }
 
     async create(req, res) {
@@ -124,6 +125,25 @@ class UserController {
             return res.status(404).json({
                 message: 'Not able to authenticate the user.',
                 token: {},
+                success: false,
+                err: error
+            });
+        }
+    }
+
+    async isAdmin(req, res) {
+        try {
+            const response = await this.userService.isAdmin(req.body.id);
+            res.status(200).json({
+                success: true,
+                data: response,
+                err: {},
+                message: "Successfully fetched whether user is ADMIN or NOT."
+            });
+        } catch (error) {
+            return res.status(404).json({
+                message: 'Something went wrong in isAdmin controllers.',
+                data: {},
                 success: false,
                 err: error
             });
