@@ -1,4 +1,5 @@
 const { User, Role } = require('../models/index');
+const ValidationError = require('../utils/validation-error');
 
 class UserRepository {
     
@@ -7,6 +8,9 @@ class UserRepository {
             const user = await User.create(data);
             return user;
         } catch (error) {
+            if (error.name === 'SequelizeValidationError') {
+                throw new ValidationError(error);
+            }
             console.log("Something went wrong at user-Repository.");
             throw error;
         }
@@ -55,7 +59,6 @@ class UserRepository {
             if (!user) {
                 throw { error: 'User not found' };
             }
-            console.log(user);
             const adminRole = await Role.findOne({
                 where: {
                     name: 'ADMIN', // in Role model schema we wrote name

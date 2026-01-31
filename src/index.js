@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const { PORT } = require('./config/serverConfig');
 const ApiRoutes = require('./routes/index');
 const db = require('./models/index');
-const { User, Role } = require('./models/index');
 
 const startServer = () => {
 
